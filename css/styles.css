@@ -1,0 +1,165 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family:'Times New Roman', Times, serif;
+    background: #f4f4f4;
+    color: #333;
+    line-height: 1.4;
+    padding: 20px;
+}
+
+a {
+    text-decoration: none;
+    color: #0066cc;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+main {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Portada */
+#ultimos-avisos h2 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#avisos {
+    list-style: none;
+}
+
+.aviso {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.aviso h3 {
+    font-size: 1.1em;
+    margin-bottom: 4px;
+}
+
+.aviso p {
+    font-size: 0.9em;
+}
+
+/*Formulario Agregar */
+form fieldset {
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+form legend {
+    font-weight: bold;
+}
+
+form label {
+    display: block;
+    margin: 8px 0 4px;
+}
+
+form input,
+form select,
+form textarea {
+    width: 100%;
+    padding: 6px;
+    margin-bottom: 8px;
+    border: 1px solid #bbb;
+    border-radius: 3px;
+}
+
+#add-photo {
+    margin-bottom: 12px;
+}
+
+.hidden {
+    display: none;
+}
+
+/*Botones*/
+button,
+input[type="submit"] {
+    background: #0066cc;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button:hover,
+input[type="submit"]:hover {
+    background: #004999;
+}
+
+/* Tabla Listado */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table th,
+table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+tr.clickable{
+    cursor: pointer;
+}
+
+tr.clickable:hover {
+    background: #eef;
+}
+
+/* Modal Imagen */
+#image-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#image-modal.hidden {
+    display: none;
+}
+
+#image-modal img {
+    max-width: 800px;
+    max-height: 600px;
+}
+
+#image-modal button {
+    margin-top: 10px;
+}
