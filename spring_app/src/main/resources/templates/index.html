@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Portada{% endblock %}
+{% block content %}
+    <h2>Portada</h2>
+    <p>Bienvenid@ a la página!!</p>
+    <section>
+  <h3>Últimos 5 avisos</h3>
+  {% if ultimos %}
+    <table class="gst-table compact" role="table" aria-label="Últimos 5 avisos">
+      <thead>
+        <tr>
+          <th>Fecha publicación</th>
+          <th>Región</th>
+          <th>Comuna</th>
+          <th>Sector</th>
+          <th>Cantidad / Tipo / Edad</th>
+          <th>Foto</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in ultimos %}
+          <tr class="clickable-row" data-href="{{ url_for('detalle', aviso_id=u.id) }}">
+            <td>{{ u.fecha_ingreso.strftime('%Y-%m-%d') }}</td>
+            <td>{{ u.comuna.region.nombre }}</td>
+            <td>{{ u.comuna.nombre }}</td>
+            <td>{{ u.sector or '-' }}</td>
+            <td>{{ u.cantidad }} · {{ u.tipo }} · {{ u.edad }}{{ u.unidad_medida }}</td>
+            <td>
+              {% if u.fotos and u.fotos|length > 0 %}
+                <img src="{{ url_for('static', filename=u.fotos[0].ruta_archivo) }}" alt="{{ u.fotos[0].nombre_archivo }}" class="preview">
+              {% else %}
+                -
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.clickable-row').forEach(function(tr) {
+          tr.addEventListener('click', function() {
+            const href = this.dataset.href;
+            if (href) window.location = href;
+          });
+          tr.style.cursor = 'pointer';
+        });
+      });
+    </script>
+  {% else %}
+    <p>No hay avisos recientes</p>
+  {% endif %}
+</section>
+{% endblock %}

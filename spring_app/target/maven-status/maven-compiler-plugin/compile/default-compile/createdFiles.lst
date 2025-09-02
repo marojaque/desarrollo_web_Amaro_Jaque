@@ -1,0 +1,14 @@
+com\desarrolloweb\t4\controller\ApiExceptionHandler.class
+com\desarrolloweb\t4\Application.class
+com\desarrolloweb\t4\controller\AvisoController.class
+com\desarrolloweb\t4\model\Comuna.class
+com\desarrolloweb\t4\controller\ViewController.class
+com\desarrolloweb\t4\repository\AvisoRepository.class
+com\desarrolloweb\t4\dto\NotaResultDto.class
+com\desarrolloweb\t4\repository\NotaRepository.class
+com\desarrolloweb\t4\model\AvisoAdopcion.class
+com\desarrolloweb\t4\dto\NotaCreateDto.class
+com\desarrolloweb\t4\model\Nota.class
+com\desarrolloweb\t4\dto\AvisoListDto.class
+com\desarrolloweb\t4\service\NotaService.class
+com\desarrolloweb\t4\config\WebConfig.class

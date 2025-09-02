@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Adopciones - Portada</title>
+    <link rel="stylesheet" th:href="@{/css/masyo.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .nav-link {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .nav-link:hover {
+            background-color: #45a049;
+        }
+        .main-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Adopciones</h1>
+        <nav>
+            <a href="/" class="nav-link">Portada</a>
+            <a href="/avisos" class="nav-link">Evaluar Avisos</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Portada</h2>
+        <p>Bienvenid@ a la página de adopciones!!</p>
+        <section class="main-section">
+            <h3>Evaluar Avisos de Adopción</h3>
+            <p>Puedes acceder al sistema de evaluación de avisos haciendo clic en el siguiente enlace:</p>
+            <p><a href="/avisos" style="font-size: 1.2em; font-weight: bold; color: #4CAF50; text-decoration: none;">→ Ir a Evaluar Avisos</a></p>
+            <p style="margin-top: 20px;">O también puedes usar el menú de navegación en la parte superior.</p>
+        </section>
+    </main>
+</body>
+</html>
+

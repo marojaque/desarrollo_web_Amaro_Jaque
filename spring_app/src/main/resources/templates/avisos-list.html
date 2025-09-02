@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <title>Listado de avisos - Evaluar</title>
+  <link rel="stylesheet" th:href="@{/css/masyo.css}">
+  <style>
+    .nav-link {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 5px;
+      background-color: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    .nav-link:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Adopciones</h1>
+    <nav>
+      <a href="/" class="nav-link">Portada</a>
+      <a href="/avisos" class="nav-link">Evaluar Avisos</a>
+    </nav>
+  </header>
+  <main>
+    <h2>Listado de avisos - Evaluar</h2>
+    <table id="avisos-table" border="1" cellpadding="6" cellspacing="0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Fecha publicación</th>
+          <th>Sector</th>
+          <th>Cantidad Tipo Edad</th>
+          <th>Comuna</th>
+          <th>Nota</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- relleno por JS -->
+      </tbody>
+    </table>
+  </main>
+
+  <script src="/js/avisos-evaluar.js"></script>
+</body>
+</html>
