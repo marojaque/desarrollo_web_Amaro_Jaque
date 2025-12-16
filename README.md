@@ -1,4 +1,4 @@
 # desarrollo_web_Amaro_Jaque.-
 Repositorio dedicado al curso Desarrollo de Aplicaciones Web
-El único error que no fui capaz de solucionar fue que al momento de enviar un formulario de adopción
-se debe re-seleccionar la región que aparece por defecto (Tarapacá) para así poder ver las comunas correspondientes.
+El proyecto ya está terminado, la versión final se encuentra en la rama Tarea-4
+Se trata de una página de adopciones funcional, cuenta con un sistema de base de datos conectado a un estadístico que se actualiza en vivo
