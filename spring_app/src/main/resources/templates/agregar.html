@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% block title %}Agregar aviso{% endblock %}
+{% block content %}
+  <h2>Agregar Aviso de Adopción</h2>
+
+  <form id="form-aviso" method="post" action="{{ url_for('agregar') }}" enctype="multipart/form-data">
+    <label for="nombre">Nombre de quien publica*</label>
+    <input type="text" name="nombre" id="nombre" value="{{ form.nombre or '' }}" required maxlength="200">
+
+    <label for="email">Email*</label>
+    <input type="email" name="email" id="email" value="{{ form.email or '' }}" required maxlength="100">
+
+    <label for="celular">Celular</label>
+    <input type="text" name="celular" id="celular" value="{{ form.celular or '' }}" maxlength="15">
+
+    <label for="tipo">Tipo</label>
+    <select name="tipo" id="tipo" required>
+      <option value="">--</option>
+      <option value="perro" {% if form.tipo =='perro' %}selected{% endif %}>Perro</option>
+      <option value="gato" {% if form.tipo=='gato' %}selected{% endif %}>Gato</option>
+    </select>
+
+    <label for="cantidad">Cantidad</label>
+    <input type="number" name="cantidad" id="cantidad" value="{{ form.cantidad or 1 }}" min="1" required>
+
+    <label for="edad">Edad*</label>
+    <input type="number" name="edad" id="edad" value="{{ form.edad or 0 }}" min="0" required>
+
+    <label for="unidad_medida">Unidad</label>
+    <select name="unidad_medida" id="unidad_medida" required>
+      <option value="a" {% if form.unidad_medida=='a' %}selected{% endif %}>Años</option>
+      <option value="m" {% if form.unidad_medida=='m' %}selected{% endif %}>Meses</option>
+    </select>
+
+    <label for="fecha_entrega">Fecha de entrega</label>
+    <input type="datetime-local" name="fecha_entrega" id="fecha_entrega" value="{{ form.fecha_entrega or '' }}" required>
+
+    <label for="sector">Sector</label>
+    <input type="text" name="sector" id="sector" value="{{ form.sector or '' }}" maxlength="100">
+
+    <label for="region_id">Región</label>
+    <select id="region_id" name="region_id" required>
+      <option value="">Seleccione una región</option>
+        {% for region in regiones %}
+          <option value="{{ region.id }}" {% if form.get('region_id') and form.get('region_id')|int == region.id %}selected{% endif %}>
+          {{ region.nombre }}
+          </option>
+        {% endfor %}
+    </select>
+
+<label for="comuna_id">Comuna</label>
+<select id="comuna_id" name="comuna_id" required>
+  <option value="">Seleccione una comuna</option>
+  {% for comuna in comunas %}
+    <option value="{{ comuna.id }}"
+      data-region="{{ comuna.region_id }}"
+      {% if form.get('comuna_id') and form.get('comuna_id')|int == comuna.id %}selected{% endif %}>
+      {{ comuna.nombre }}
+    </option>
+  {% endfor %}
+</select>
+
+    <label for="descripcion">Descripción</label>
+    <textarea name="descripcion" id="descripcion" rows="4" cols="60" maxlength="500">{{ form.descripcion or '' }}</textarea>
+
+    <hr>
+    <h4>Contactos</h4>
+    <div id="contactos">
+      <div class="contacto-row">
+        <select name="contactar_nombre[]">
+          <option value="whatsapp">Whatsapp</option>
+          <option value="telegram">Telegram</option>
+          <option value="X">X</option>
+          <option value="instagram">Instagram</option>
+          <option value="tiktok">TikTok</option>
+          <option value="otra">Otra</option>
+        </select>
+        <input type="text" name="contactar_identificador[]" placeholder="Número o usuario">
+      </div>
+    </div>
+    <button type="button" id="agregar-contacto">Agregar otro contacto</button>
+
+    <hr>
+    <label for="fotos">Fotos</label>
+    <div id="fotos-list">
+      <input type="file" name="fotos" accept=".png,.jpg,.jpeg" class="foto-input">
+    </div>
+    <button type="button" id="add-foto">Agregar otra foto</button>
+
+    <div style="margin-top:1em;">
+      <button type="submit">Agregar aviso</button>
+    </div>
+  </form>
+
+  <script>
+  document.getElementById('agregar-contacto').addEventListener('click', () => {
+    const cont = document.getElementById('contactos');
+    const row = document.createElement('div');
+    row.className = 'contacto-row';
+    row.innerHTML = `
+      <select name="contactar_nombre[]">
+        <option value="whatsapp">whatsapp</option>
+        <option value="telegram">telegram</option>
+        <option value="X">X</option>
+        <option value="instagram">instagram</option>
+        <option value="tiktok">tiktok</option>
+        <option value="otra">otra</option>
+      </select>
+      <input type="text" name="contactar_identificador[]" placeholder="Número o usuario">
+      <button type="button" class="quitar">Quitar</button>
+    `;
+    cont.appendChild(row);
+    row.querySelector('.quitar').addEventListener('click', () => row.remove());
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+  const regionSelect = document.getElementById('region_id');
+  const comunaSelect = document.getElementById('comuna_id');
+
+  function clearComunas() {
+    comunaSelect.innerHTML = '<option value="">Seleccione una comuna</option>';
+  }
+
+  function fillComunas(list, selectedId) {
+    clearComunas();
+    list.forEach(function(c) {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = c.nombre;
+      if (selectedId && Number(selectedId) === Number(c.id)) opt.selected = true;
+      comunaSelect.appendChild(opt);
+    });
+  }
+
+  const initialRegion = regionSelect.value;
+  const initialComuna = comunaSelect.dataset.selected || comunaSelect.value;
+  if (initialRegion) {
+    fetch(`/api/comunas/${initialRegion}`)
+      .then(r => r.json())
+      .then(list => fillComunas(list, initialComuna))
+      .catch(() => {});
+  } else {
+    const selectedComunaOption = comunaSelect.querySelector('option[selected]');
+    if (selectedComunaOption) {
+      const regionId = selectedComunaOption.dataset.region;
+      if (regionId) regionSelect.value = regionId;
+    }
+  }
+
+  regionSelect.addEventListener('change', function() {
+    const rid = this.value;
+    if (!rid) {
+      clearComunas();
+      return;
+    }
+    fetch(`/api/comunas/${rid}`)
+      .then(r => r.json())
+      .then(list => fillComunas(list))
+      .catch(() => {
+        clearComunas();
+      });
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  const fotosList = document.getElementById('fotos-list');
+  const addBtn = document.getElementById('add-foto');
+
+  addBtn.addEventListener('click', function () {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'foto-row';
+
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.name = 'fotos';
+    input.accept = '.png,.jpg,.jpeg';
+    input.className = 'foto-input';
+
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.textContent = 'Eliminar';
+    remove.addEventListener('click', () => wrapper.remove());
+
+    wrapper.appendChild(input);
+    wrapper.appendChild(remove);
+    fotosList.appendChild(wrapper);
+  });
+});
+  </script>
+{% endblock %}

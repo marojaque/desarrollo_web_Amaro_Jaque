@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Listado de Adopciones</title>
+        <link rel="stylesheet" href="../css/styles.css">
+        <script src="../js/listado.js" defer></script>
+    </head>
+    <body>
+        <header>
+            <h1>Listado de avisos de adopción</h1>
+            <nav><a href="index.html">Volver a la portada</a></nav>
+        </header>
+
+        <main>
+            <section id="listado-section">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha Publicación</th>
+                            <th>Fecha Entrega</th>
+                            <th>Comuna</th>
+                            <th>Sector</th>
+                            <th>Cantidad / Especie / Edad</th>
+                            <th>Nombre Contacto</th>
+                            <th>Total Fotos</th>
+                        </tr>
+                    </thead>
+                    <tbody id="avisos-tbody"></tbody>
+                </table>
+            </section>
+
+            <section id="detalle-section" class="hidden">
+                <h2>Detalle</h2>
+                <div id="detalle-content"></div>
+                <button id="back-list">Volver al listado</button>
+                <button onclick="location.href='index.html'">Volver a la portada</button>
+
+                <div id="image-modal" class="hidden">
+                    <div>
+                        <img id="modal-img" src="" alt="Ampliada">
+                        <button id="close-modal">Cerrar</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </body>
+</html>

@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block title %}Detalle aviso{% endblock %}
+{% block content %}
+  <h2>Detalle de aviso</h2>
+  <h3>{{ aviso.nombre }}</h3>
+  <p><strong>Tipo:</strong> {{ aviso.tipo }} • <strong>Cantidad:</strong> {{ aviso.cantidad }}</p>
+  <p><strong>Edad:</strong> {{ aviso.edad }} {{ 'años' if aviso.unidad_medida=='a' else 'meses' }}</p>
+  <p><strong>Ubicación:</strong> {{ aviso.comuna.nombre }}, {{ aviso.comuna.region.nombre }} {% if aviso.sector %} - Sector: {{ aviso.sector }}{% endif %}</p>
+  <p><strong>Fecha entrega:</strong> {{ aviso.fecha_entrega.strftime('%Y-%m-%d %H:%M') }}</p>
+  <p><strong>Descripción:</strong> {{ aviso.descripcion or '—' }}</p>
+
+  <h4>Contactos</h4>
+  {% if aviso.contactos %}
+    <ul>
+      {% for c in aviso.contactos %}
+        <li>{{ c.nombre }}: {{ c.identificador }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No hay medio de contacto</p>
+  {% endif %}
+
+  <h4>Fotos</h4>
+  {% if aviso.fotos %}
+    <div class="galeria">
+      {% for f in aviso.fotos %}
+        <img src="{{ url_for('static', filename=f.ruta_archivo) }}" alt="{{ f.nombre_archivo }}" />
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No hay fotos.</p>
+  {% endif %}
+
+  <hr class="rule-gst" />
+  <h3>Comentarios</h3>
+
+  <div id="comentarios-section">
+    <div id="lista-comentarios">
+      <p class="small">Cargando</p>
+    </div>
+    <h4>Agregar comentario</h4>
+    <form id="form-comentario" method="post" novalidate>
+      <label for="c-nombre">Nombre</label>
+      <input id="c-nombre" name="nombre" type="text" minlength="3" maxlength="80" required>
+      <label for="c-texto">Comentario</label>
+      <textarea id="c-texto" name="texto" rows="4" cols="50" minlength="5" required></textarea>
+
+      <div id="comentario-errors" class="small" style="color:#f66;"></div>
+      <button id="btn-agregar-comentario" type="button" class="btn">Agregar comentario</button>
+    </form>
+  </div>
+
+  <script>
+    const avisoId = {{ aviso.id | tojson }};
+
+  async function cargarComentarios() {
+    try {
+      const res = await fetch(`/aviso/${avisoId}/comentarios`);
+      const cont = document.getElementById('lista-comentarios');
+      if (!res.ok) {
+        cont.innerHTML = '<p class="small">Error al cargar comentarios.</p>';
+        return;
+      }
+      const data = await res.json();
+      if (!data.comentarios || data.comentarios.length === 0) {
+        cont.innerHTML = '<p class="small">No hay comentarios aún.</p>';
+        return;
+      }
+      const html = data.comentarios.map(c =>
+        `<div class="comentario-row">
+           <div class="small">${c.fecha} — <strong>${escapeHtml(c.nombre)}</strong></div>
+           <div>${escapeHtml(c.texto)}</div>
+         </div>`
+      ).join('');
+      cont.innerHTML = html;
+    } catch (err) {
+      console.error('Error en cargarComentarios:', err);
+      document.getElementById('lista-comentarios').innerHTML = '<p class="small">Error de red al cargar comentarios.</p>';
+    }
+  }
+  window.cargarComentarios = cargarComentarios; 
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  async function handleAgregarComentario() {
+    const nombre = document.getElementById('c-nombre').value.trim();
+    const texto = document.getElementById('c-texto').value.trim();
+    const errDiv = document.getElementById('comentario-errors');
+    errDiv.textContent = '';
+
+    const errors = {};
+    if (!nombre || nombre.length < 3 || nombre.length > 80) errors.nombre = 'Nombre entre 3 y 80 caracteres.';
+    if (!texto || texto.length < 5 || texto.length > 300) errors.texto = 'Comentario entre 5 y 300 caracteres.';
+    if (Object.keys(errors).length > 0) {
+      errDiv.textContent = Object.values(errors).join(' ');
+      return;
+    }
+
+    try {
+      const res = await fetch(`/aviso/${avisoId}/comentario`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ nombre, texto })
+      });
+      if (res.status === 201) {
+        document.getElementById('c-nombre').value = '';
+        document.getElementById('c-texto').value = '';
+        await cargarComentarios();
+      } else {
+        const d = await res.json().catch(()=>({}));
+        if (d && d.errors) {
+          errDiv.textContent = Object.values(d.errors).join(' ');
+        } else {
+          errDiv.textContent = 'Error al crear comentario.';
+        }
+      }
+    } catch (err) {
+      console.error('Error de red en handleAgregarComentario:', err);
+      errDiv.textContent = 'Error de red al enviar comentario.';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('btn-agregar-comentario').addEventListener('click', handleAgregarComentario);
+
+    cargarComentarios();
+  });
+  </script>
+{% endblock %}

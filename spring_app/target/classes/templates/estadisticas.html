@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Estadísticas{% endblock %}
+{% block content %}
+    <h2 class="title_accent">Estadísticas</h2>
+    <section>
+        <h3>Avisos por día</h3>
+        <canvas id="chart-by-day" width="800" height="300"></canvas>
+    </section>
+    <section>
+        <h3>Distribución por tipo</h3>
+        <canvas id="chart-by-type" width="400" height="300"></canvas>
+    </section>
+    <section>
+        <h3>Avisos por mes</h3>
+        <canvas id="chart-by-month" width="900" height="400"></canvas>
+    </section>
+
+    <p><a href="{{ url_for('index') }}" class="btn">Volver a la portada</a></p>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        async function loadData() {
+            const res = await fetch('{{ url_for("stats_data") }}');
+            if(!res.ok) {
+                console.error('Error al obtener datos');
+                return;
+            }
+            const d = await res.json();
+
+            // Pie chart (tipo)
+            const ctxType = document.getElementById('chart-by-type').getContext('2d');
+            new Chart(ctxType, {
+                type: 'pie',
+                data: { labels: d.by_type.labels, datasets: [{ data: d.by_type.data, backgroundColor: ['#2aa198','#8b1b1b'] }]},
+                options: { responsive:true }
+            });
+
+            // Line chart (por día)
+            const ctxDay = document.getElementById('chart-by-day').getContext('2d');
+            new Chart(ctxDay, {
+                type: 'line',
+                data: { labels: d.by_day.labels, datasets: [{ label: 'Avisos por día', data: d.by_day.data, borderColor: '#2aa198', backgroundColor: 'rgba(42,161,152,0.08)', fill:true }]},
+                options: { responsive:true, scales:{ x:{ display:true }, y:{ beginAtZero:true, ticks:{precision:0} } } }
+            });
+
+            // Bar chart (por mes, perros vs gatos)
+            const ctxMonth = document.getElementById('chart-by-month').getContext('2d');
+            new Chart(ctxMonth, {
+                type: 'bar',
+                data: {
+                    labels: d.by_month.labels,
+                    datasets: [
+                        { label: 'Perros', data: d.by_month.perros, backgroundColor: '#2aa198' },
+                        { label: 'Gatos', data: d.by_month.gatos, backgroundColor: '#7a9a4a' }
+                    ]
+                },
+                options: { responsive:true, scales: { x: { stacked:false }, y: { beginAtZero:true, ticks:{precision:0} } } }
+            });
+        }
+        document.addEventListener('DOMContentLoaded', loadData);
+    </script>
+{% endblock %}

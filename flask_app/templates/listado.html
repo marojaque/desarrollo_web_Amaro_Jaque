@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Listado de adopciones{% endblock %}
+{% block content %}
+  <h2 class="title-accent">Listado de adopciones</h2>
+
+  <table class="gst-table" role="table" aria-label="Listado de adopciones">
+    <thead>
+      <tr>
+        <th>Fecha publicación</th>
+        <th>Fecha entrega</th>
+        <th>Región</th>
+        <th>Comuna</th>
+        <th>Cantidad / Tipo / Edad</th>
+        <th>Contacto</th>
+        <th># Fotos</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for aviso in pagination.items %}
+        <tr class="clickable-row" data-href="{{ url_for('detalle', aviso_id=aviso.id) }}">
+          <td>{{ aviso.fecha_ingreso.strftime('%Y-%m-%d %H:%M') }}</td>
+          <td>{{ aviso.fecha_entrega.strftime('%Y-%m-%d') if aviso.fecha_entrega else '-' }}</td>
+          <td>{{ aviso.comuna.region.nombre }}</td>
+          <td>{{ aviso.comuna.nombre }}</td>
+          <td>{{ aviso.cantidad }} · {{ aviso.tipo }} · {{ aviso.edad }}{{ aviso.unidad_medida }}</td>
+          <td>
+            {% if aviso.contactos and aviso.contactos|length > 0 %}
+              {{ aviso.contactos[0].nombre }}: {{ aviso.contactos[0].identificador }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td>{{ aviso.fotos|length }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <nav class="pagination" aria-label="Paginación listado">
+    {% if pagination.has_prev %}
+      <a class="btn" href="{{ url_for('listado', page=pagination.prev_num) }}">&larr; Anterior</a>
+    {% endif %}
+    <span class="small">Página {{ pagination.page }} de {{ pagination.pages or 1 }}</span>
+    {% if pagination.has_next %}
+      <a class="btn" href="{{ url_for('listado', page=pagination.next_num) }}">Siguiente &rarr;</a>
+    {% endif %}
+  </nav>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.clickable-row').forEach(function(tr) {
+      tr.addEventListener('click', function() {
+        const href = this.dataset.href;
+        if (href) window.location = href;
+      });
+      tr.style.cursor = 'pointer';
+    });
+  });
+  </script>
+{% endblock %}
